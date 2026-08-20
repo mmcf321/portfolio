@@ -1,0 +1,1359 @@
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+
+    <meta
+      name="description"
+      content="Closed-Loop Motor Control System engineering project by Matt McFarland"
+    />
+
+    <title>Closed-Loop Motor Control System | Matt McFarland</title>
+  </head>
+
+  <body>
+    <main class="project-page">
+
+      <!-- BACK -->
+      <a class="back-link" href="/#projects">← Back to portfolio</a>
+
+
+      <!-- HERO -->
+      <header class="project-hero">
+
+        <p class="project-label">
+          Analog Circuits • Feedback Control • Spring 2026
+        </p>
+
+        <h1>Closed-Loop Motor Control System</h1>
+
+        <p class="project-summary">
+          Experimentally characterized DC motors, developed and validated a
+          mathematical motor model, designed an encoder-based speed sensor, and
+          built an op-amp feedback controller that achieved a critically damped
+          motor-speed response.
+        </p>
+
+      </header>
+
+
+      <!-- HERO / PHYSICAL SETUP IMAGE -->
+      <div class="hero-image">
+        <img
+          src="/projects/motor-control/hero.jpeg"
+          alt="Closed-loop DC motor control system physical setup"
+        />
+      </div>
+
+
+      <!-- PROJECT META -->
+      <section class="project-meta">
+
+        <div>
+          <span>Focus</span>
+          <strong>Feedback Control</strong>
+        </div>
+
+        <div>
+          <span>Controller</span>
+          <strong>Analog I-Compensator</strong>
+        </div>
+
+        <div>
+          <span>Feedback</span>
+          <strong>Encoder Speed Sensor</strong>
+        </div>
+
+        <div>
+          <span>Result</span>
+          <strong>Critically Damped</strong>
+        </div>
+
+      </section>
+
+
+      <!-- PROJECT GOAL -->
+      <section class="content-section">
+
+        <p class="section-label">Project Goal</p>
+
+        <h2>
+          Control motor speed using measured feedback rather than fixed voltage.
+        </h2>
+
+        <p>
+          The project began by experimentally characterizing the DC motors and
+          developing a model of their electrical and mechanical behavior. That
+          model was then used to design a closed-loop speed-control system.
+        </p>
+
+        <p>
+          A reference voltage represented the desired motor speed. An
+          encoder-based sensor measured the actual speed and converted it into
+          a proportional voltage. The controller compared the desired and
+          measured speeds and continuously adjusted the motor drive to reduce
+          the error.
+        </p>
+
+
+        <!-- SIMPLE CONTROL LOOP -->
+        <div class="control-flow">
+
+          <div class="flow-block">
+            <span>1</span>
+            <strong>Reference</strong>
+            <small>Desired speed</small>
+          </div>
+
+          <div class="flow-arrow">→</div>
+
+          <div class="flow-block">
+            <span>2</span>
+            <strong>Error</strong>
+            <small>Difference amplifier</small>
+          </div>
+
+          <div class="flow-arrow">→</div>
+
+          <div class="flow-block">
+            <span>3</span>
+            <strong>Controller</strong>
+            <small>I-compensator</small>
+          </div>
+
+          <div class="flow-arrow">→</div>
+
+          <div class="flow-block">
+            <span>4</span>
+            <strong>Motor</strong>
+            <small>Physical system</small>
+          </div>
+
+          <div class="flow-arrow">→</div>
+
+          <div class="flow-block">
+            <span>5</span>
+            <strong>Speed Sensor</strong>
+            <small>Feedback voltage</small>
+          </div>
+
+        </div>
+
+      </section>
+
+
+      <!-- MOTOR CHARACTERIZATION -->
+      <section class="content-section">
+
+        <p class="section-label">Motor Characterization</p>
+
+        <h2>
+          Measuring the physical system before designing the controller.
+        </h2>
+
+        <p>
+          Rather than relying on nominal motor specifications, the motors were
+          characterized experimentally. A variable motor supply allowed voltage,
+          current, encoder frequency, and motor speed to be measured over a
+          range of operating conditions.
+        </p>
+
+
+        <!-- MOTOR EQUIVALENT CIRCUIT -->
+        <div class="figure-block">
+
+          <div class="motor-model-image">
+            <img
+              src="/projects/motor-control/motor-equivalent-circuit.png"
+              alt="Electrical and mechanical equivalent circuits of the DC motor"
+            />
+          </div>
+
+          <p class="figure-caption">
+            Electrical and mechanical equivalent circuits used to model the DC motor
+            and relate voltage, current, torque, and angular velocity.
+          </p>
+
+        </div>
+
+
+        <!-- PARAMETER CARDS -->
+        <div class="parameter-grid">
+
+          <article class="parameter-card">
+
+            <span class="parameter-symbol">R<sub>M</sub></span>
+
+            <strong>2.33 Ω</strong>
+
+            <h3>Armature Resistance</h3>
+
+            <p>
+              The rotor was physically stalled so angular velocity and back-EMF
+              were zero. Motor voltage was plotted against measured current, and
+              the slope of the resulting relationship was used to determine the
+              armature resistance.
+            </p>
+
+          </article>
+
+
+          <article class="parameter-card">
+
+            <span class="parameter-symbol">k</span>
+
+            <strong>0.387</strong>
+
+            <h3>Motor Constant</h3>
+
+            <p>
+              The unloaded motor was operated at multiple steady-state speeds.
+              Encoder frequency was converted to angular velocity and combined
+              with voltage and current measurements to determine the motor
+              constant from back-EMF.
+            </p>
+
+          </article>
+
+
+          <article class="parameter-card">
+
+            <span class="parameter-symbol">B</span>
+
+            <strong>0.0119</strong>
+
+            <h3>Viscous Friction</h3>
+
+            <p>
+              Motor torque was calculated from measured current and plotted
+              against angular velocity. The slope of the fitted relationship
+              provided the viscous-friction coefficient.
+            </p>
+
+          </article>
+
+
+          <article class="parameter-card">
+
+            <span class="parameter-symbol">T<sub>INT</sub></span>
+
+            <strong>0.0435 N·m</strong>
+
+            <h3>Internal Friction Torque</h3>
+
+            <p>
+              The y-intercept of the torque-versus-speed relationship was used
+              to estimate the internal friction torque of the motor.
+            </p>
+
+          </article>
+
+        </div>
+
+
+        <!-- CHARACTERIZATION GRAPH 1 -->
+        <div class="figure-block">
+
+          <div class="characterization-graph">
+            <img
+              src="/projects/motor-control/rm-characterization.png"
+              alt="Measured motor voltage versus current used to determine armature resistance"
+            />
+          </div>
+
+          <p class="figure-caption">
+            Measured motor voltage versus current with linear fits used to
+            determine armature resistance R<sub>M</sub>.
+          </p>
+
+        </div>
+
+
+        <!-- CHARACTERIZATION GRAPH 2 -->
+        <div class="figure-block">
+
+          <div class="characterization-graph">
+            <img
+              src="/projects/motor-control/torque-speed-characterization.png"
+              alt="Motor torque versus angular velocity characterization graph"
+            />
+          </div>
+
+          <p class="figure-caption">
+            Torque versus angular velocity used to determine viscous friction
+            and internal friction torque.
+          </p>
+
+        </div>
+
+      </section>
+
+
+      <!-- MODEL VALIDATION -->
+      <section class="content-section">
+
+        <p class="section-label">Motor Model</p>
+
+        <h2>
+          Turning experimental measurements into a validated dynamic model.
+        </h2>
+
+        <p>
+          The measured electrical and mechanical parameters were incorporated
+          into a SIMetrix motor model. Experimental test conditions were then
+          recreated in simulation to check whether the modeled motor behaved
+          like the physical motor.
+        </p>
+
+        <p>
+          Model validation compared the simulated motor spin-down response with
+          the measured response of the physical motor. The simulated spin-down
+          time was 1.07 seconds compared with a measured spin-down time of
+          0.936 seconds, providing a close comparison between the model and the
+          physical system.
+        </p>
+
+
+        <div class="validation-results">
+
+          <article>
+            <span>Simulated</span>
+            <strong>1.07 s</strong>
+            <p>Spin-down time</p>
+          </article>
+
+          <article>
+            <span>Measured</span>
+            <strong>0.936 s</strong>
+            <p>Spin-down time</p>
+          </article>
+
+          <article>
+            <span>Validated Inertia</span>
+            <strong>0.00989 kg·m²</strong>
+            <p>J</p>
+          </article>
+
+        </div>
+
+
+        <!-- SIMULATION VS MEASUREMENT -->
+        <div class="two-image-grid">
+
+          <div>
+
+            <div class="validation-image">
+              <img
+                src="/projects/motor-control/motor-model-simulation.png"
+                alt="SIMetrix simulation of DC motor spin-down response"
+              />
+            </div>
+
+            <p class="figure-caption">
+              Simulated motor turn-off response. Motor voltage and angular
+              velocity decay after the motor is open-circuited. Spin down time measured at 1.07s.
+            </p>
+
+          </div>
+
+
+          <div>
+
+            <div class="validation-image">
+              <img
+                src="/projects/motor-control/motor-model-measured.png"
+                alt="Oscilloscope measurement of physical DC motor spin-down response"
+              />
+            </div>
+
+            <p class="figure-caption">
+              Measured turn-off response of the physical motor used to compare
+              the experimental system with the simulated model. Spin down time measured at 0.936s.
+            </p>
+
+          </div>
+
+        </div>
+
+      </section>
+
+
+       <!-- SPEED SENSOR -->
+      <section class="content-section">
+
+        <p class="section-label">Speed Sensor</p>
+
+        <h2>
+          Converting encoder pulses into an analog feedback voltage.
+        </h2>
+
+        <p>
+          The motor encoder produced a pulse train whose frequency increased
+          with motor speed. Because the feedback controller operated using
+          analog voltages, a speed-sensor circuit was developed to convert
+          encoder frequency into a proportional DC voltage.
+        </p>
+
+        <p>
+          A 555-timer-based pulse circuit generated controlled output pulses,
+          and a low-pass filter averaged those pulses into a smooth voltage
+          representing motor speed.
+        </p>
+
+
+        <div class="sensor-results">
+
+          <article>
+            <span>Full-Speed Output</span>
+            <strong>≈ 6.12 V</strong>
+          </article>
+
+          <article>
+            <span>Measured Ripple</span>
+            <strong>116 mV</strong>
+          </article>
+
+        </div>
+
+
+        <div class="two-image-grid">
+
+          <div>
+
+            <div class="physical-image">
+              <img
+                src="/projects/motor-control/speed-sensor-photo.png"
+                alt="Physical encoder speed sensor circuit"
+              />
+            </div>
+
+            <p class="figure-caption">
+              Physical encoder speed-sensor circuit.
+            </p>
+
+          </div>
+
+
+          <div>
+
+            <div class="schematic-image">
+              <img
+                src="/projects/motor-control/speed-sensor-schematic.png"
+                alt="555 timer and low-pass filter speed sensor schematic"
+              />
+            </div>
+
+            <p class="figure-caption">
+              555-timer and low-pass-filter speed sensor.
+            </p>
+
+          </div>
+
+        </div>
+
+
+        <!-- SPEED SENSOR VALIDATION -->
+        <div class="figure-block">
+
+          <div class="speed-sensor-validation">
+            <img
+              src="/projects/motor-control/speed-sensor-validation.png"
+              alt="Measured and simulated speed sensor output versus motor angular velocity"
+            />
+          </div>
+
+          <p class="figure-caption">
+            Speed-sensor validation comparing measured and simulated analog
+            output voltage as a function of motor angular velocity.
+          </p>
+
+        </div>
+
+      </section>
+
+
+      <!-- CONTROLLER DESIGN -->
+      <section class="content-section">
+
+        <p class="section-label">Controller Design</p>
+
+        <h2>
+          Designing the feedback loop from the measured motor dynamics.
+        </h2>
+
+        <p>
+          A difference-amplifier stage compared the reference voltage with the
+          measured speed voltage to generate an error signal. That error was
+          passed into an op-amp integrating amplifier, creating an
+          I-compensator that adjusted the motor command until measured speed
+          matched the reference.
+        </p>
+
+        <p>
+          The compensator was designed analytically using the characterized
+          motor model. Rather than tuning the system experimentally until it
+          looked acceptable, the component values were selected to target a
+          damping ratio of ζ = 1.
+        </p>
+
+
+        <!-- CONTROLLER DESIGN VALUES -->
+        <div class="controller-values">
+
+          <article>
+            <span>Design Target</span>
+            <strong>ζ = 1</strong>
+            <p>Critically damped</p>
+          </article>
+
+          <article>
+            <span>Integrator Time Constant</span>
+            <strong>0.171 s</strong>
+            <p>R<sub>I</sub>C<sub>I</sub></p>
+          </article>
+
+          <article>
+            <span>C<sub>I</sub></span>
+            <strong>5 µF</strong>
+            <p>Selected capacitor</p>
+          </article>
+
+          <article>
+            <span>R<sub>I</sub></span>
+            <strong>34 kΩ</strong>
+            <p>Implemented resistor</p>
+          </article>
+
+        </div>
+
+
+        <div class="two-image-grid">
+
+          <div>
+
+            <div class="schematic-image">
+              <img
+                src="/projects/motor-control/controller-schematic.png"
+                alt="Difference amplifier and I-compensator feedback controller schematic"
+              />
+            </div>
+
+            <p class="figure-caption">
+              Difference amplifier and integrating controller used to close the
+              speed-feedback loop.
+            </p>
+
+          </div>
+
+
+          <div>
+
+            <div class="physical-image">
+              <img
+                src="/projects/motor-control/controller-photo.png"
+                alt="Physical analog motor controller breadboard"
+              />
+            </div>
+
+            <p class="figure-caption">
+              Physical implementation of the analog controller.
+            </p>
+
+          </div>
+
+        </div>
+
+      </section>
+
+
+      <!-- FINAL SYSTEM -->
+      <section class="content-section">
+
+        <p class="section-label">System Integration</p>
+
+        <h2>
+          Combining the motor, sensor, controller, and motor driver.
+        </h2>
+
+        <p>
+          The characterized motor, encoder speed sensor, analog compensator,
+          reference input, and motor-driver circuitry were integrated into the
+          complete closed-loop system.
+        </p>
+
+        <p>
+          Motor-direction control was also implemented using H-bridge
+          circuitry, allowing the motor drive to be controlled independently
+          from the speed-feedback loop.
+        </p>
+
+
+        <!-- LARGE PHYSICAL SYSTEM PHOTO -->
+       <div class="system-schematic-image">
+  <img
+    src="/projects/motor-control/closed-loop-system-schematic.png"
+    alt="Complete closed-loop motor control system schematic including motor direction control, motor driver, motor, encoder, tachometer, and I-compensator"
+  />
+</div>
+
+<p class="figure-caption">
+  Complete closed-loop system showing the motor-direction and drive circuitry,
+  motor model, encoder, speed sensor, and I-compensator feedback loop.
+</p>
+
+      </section>
+
+
+      <!-- TESTING -->
+      <section class="content-section result-section">
+
+        <p class="section-label">Testing & Final Result</p>
+
+        <h2>
+          Measured critically damped motor-speed response.
+        </h2>
+
+        <p>
+          The completed feedback loop was tested using a changing reference
+          voltage. A rectangular reference waveform commanded the motor between
+          two operating speeds while the encoder-based sensor measured the
+          resulting response.
+        </p>
+
+        <p>
+          The measured motor speed transitioned quickly between commanded
+          values without visible oscillation, demonstrating an approximately
+          critically damped response consistent with the ζ = 1 controller
+          design.
+        </p>
+
+
+        <!-- FINAL OSCILLOSCOPE SCREENSHOT -->
+        <div class="scope-image">
+          <img
+            src="/projects/motor-control/closed-loop-response.png"
+            alt="Oscilloscope capture showing critically damped closed-loop motor speed response"
+          />
+        </div>
+
+        <p class="scope-caption">
+          Dynamic closed-loop test. Reference voltage commanded a change in
+          motor speed while the speed-sensor output tracked the response.
+        </p>
+
+
+        <div class="final-result">
+
+          <span>Final Result</span>
+
+          <strong>
+            Stable speed tracking with short rise and fall times and no visible
+            oscillation.
+          </strong>
+
+        </div>
+
+      </section>
+
+
+      <!-- WHAT I LEARNED -->
+      <section class="content-section">
+
+        <p class="section-label">What I Learned</p>
+
+        <h2>
+          Connecting physical measurements, mathematical models, and working
+          hardware.
+        </h2>
+
+        <p>
+          This project demonstrated how experimental system characterization
+          can directly inform controller design. Instead of treating the motor
+          as an ideal component, I measured its physical parameters, validated
+          a dynamic model, designed the feedback controller from that model,
+          and verified the predicted response experimentally.
+        </p>
+
+
+        <div class="skills">
+
+          <span>Feedback Control</span>
+          <span>Analog Circuits</span>
+          <span>System Identification</span>
+          <span>DC Motor Modeling</span>
+          <span>Op-Amps</span>
+          <span>Encoder Sensing</span>
+          <span>555 Timers</span>
+          <span>SIMetrix</span>
+          <span>MATLAB</span>
+          <span>Oscilloscope Testing</span>
+
+        </div>
+
+      </section>
+
+
+      <!-- BOTTOM NAV -->
+      <div class="bottom-nav">
+        <a href="/#projects">← Back to all projects</a>
+      </div>
+
+    </main>
+  </body>
+</html>
+
+
+<style>
+
+  :global(*) {
+    box-sizing: border-box;
+  }
+
+
+  :global(html) {
+    scroll-behavior: smooth;
+  }
+
+
+  :global(body) {
+    margin: 0;
+    background: #0d1117;
+    color: #f2f5f7;
+    font-family:
+      Inter,
+      ui-sans-serif,
+      system-ui,
+      -apple-system,
+      BlinkMacSystemFont,
+      "Segoe UI",
+      sans-serif;
+    line-height: 1.7;
+  }
+
+
+  .project-page {
+    width: min(1100px, calc(100% - 40px));
+    margin: 0 auto;
+    padding: 48px 0 100px;
+  }
+
+
+  /* LINKS */
+
+  .back-link,
+  .bottom-nav a {
+    color: #6fb7ff;
+    text-decoration: none;
+    font-weight: 700;
+  }
+
+
+  .back-link {
+    display: inline-block;
+    margin-bottom: 72px;
+  }
+
+
+  /* HERO */
+
+  .project-hero {
+    max-width: 1000px;
+    margin-bottom: 48px;
+  }
+
+
+  .project-label,
+  .section-label {
+    margin: 0 0 12px;
+    color: #6fb7ff;
+    font-size: 0.78rem;
+    font-weight: 800;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+
+
+  h1 {
+    max-width: 1050px;
+    margin: 0 0 28px;
+    font-size: clamp(3.3rem, 8vw, 7rem);
+    line-height: 0.94;
+    letter-spacing: -0.055em;
+    text-transform: uppercase;
+  }
+
+
+  h2 {
+    max-width: 850px;
+    margin: 8px 0 28px;
+    font-size: clamp(1.9rem, 4vw, 3rem);
+    line-height: 1.08;
+    letter-spacing: -0.03em;
+  }
+
+
+  h3 {
+    margin: 0 0 10px;
+    font-size: 1.2rem;
+    line-height: 1.2;
+  }
+
+
+  .project-summary {
+    max-width: 850px;
+    margin: 0;
+    color: #b4bdc7;
+    font-size: 1.2rem;
+  }
+
+
+  /* SHARED IMAGE CONTAINERS */
+
+.hero-image,
+.motor-model-image,
+.characterization-graph,
+.validation-image,
+.physical-image,
+.schematic-image,
+.speed-sensor-validation,
+.system-schematic-image,
+.large-physical-image,
+.scope-image {
+    display: grid;
+    place-items: center;
+    overflow: hidden;
+    border: 1px solid #28313c;
+    border-radius: 14px;
+    background: #202834;
+  }
+
+
+  /* HERO PHOTO */
+
+  .hero-image {
+    width: min(100%, 850px);
+    aspect-ratio: 4 / 3;
+    margin: 48px auto 64px;
+  }
+
+
+  .hero-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+
+  /* MOTOR EQUIVALENT CIRCUIT */
+
+  .motor-model-image {
+    width: 100%;
+    aspect-ratio: 2.6 / 1;
+  }
+
+
+  .motor-model-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+  }
+
+
+  /* CHARACTERIZATION GRAPHS */
+
+  .characterization-graph {
+    width: min(100%, 900px);
+    aspect-ratio: 4 / 3;
+  }
+
+
+  .characterization-graph img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+  }
+
+
+  /* MODEL VALIDATION FIGURE */
+
+  .validation-image {
+    width: min(100%, 900px);
+    aspect-ratio: 16 / 10;
+  }
+
+
+  .validation-image {
+    width: 100%;
+    aspect-ratio: 7 / 6;
+  }
+
+
+  .validation-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+  }
+
+
+  /* PHYSICAL CIRCUIT PHOTOS */
+
+  .physical-image {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+  }
+
+
+  .physical-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+
+  /* TECHNICAL SCHEMATICS */
+
+  .schematic-image {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+  }
+
+
+  .schematic-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+  }
+
+  /* SPEED SENSOR VALIDATION GRAPH */
+
+.speed-sensor-validation {
+  width: min(85%, 650px);
+  aspect-ratio: 1 / 1.04;
+  margin-inline: auto;
+}
+
+.speed-sensor-validation img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+
+  /* FINAL PHYSICAL SYSTEM */
+
+  .large-physical-image {
+    width: min(100%, 850px);
+    aspect-ratio: 4 / 3;
+    margin: 40px auto 0;
+  }
+
+
+  .large-physical-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+
+  /* OSCILLOSCOPE */
+
+  .scope-image {
+    width: min(100%, 950px);
+    aspect-ratio: 16 / 9.8;
+    margin-top: 42px;
+  }
+
+
+  .scope-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+  }
+
+/* COMPLETE CLOSED-LOOP SYSTEM SCHEMATIC */
+
+.system-schematic-image {
+  width: 100%;
+  margin-top: 40px;
+}
+
+.system-schematic-image img {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  display: block;
+}
+  /* META */
+
+  .project-meta {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 18px;
+    margin: 48px 0 110px;
+  }
+
+
+  .project-meta div {
+    padding: 20px 0;
+    border-top: 1px solid #34404d;
+  }
+
+
+  .project-meta span {
+    display: block;
+    margin-bottom: 8px;
+    color: #788492;
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+
+  .project-meta strong {
+    display: block;
+    font-size: 1rem;
+  }
+
+
+  /* SECTIONS */
+
+  .content-section {
+    margin-top: 130px;
+    padding-top: 30px;
+    border-top: 1px solid #1f2730;
+  }
+
+
+  .content-section > p:not(.section-label):not(.figure-caption):not(.scope-caption) {
+    max-width: 800px;
+    color: #b4bdc7;
+    font-size: 1.05rem;
+  }
+
+
+  /* CONTROL FLOW */
+
+  .control-flow {
+    display: flex;
+    align-items: stretch;
+    gap: 10px;
+    margin-top: 46px;
+    overflow-x: auto;
+    padding-bottom: 10px;
+  }
+
+
+  .flow-block {
+    min-width: 155px;
+    padding: 20px;
+    border: 1px solid #34404d;
+    border-radius: 12px;
+    background: #151b23;
+  }
+
+
+  .flow-block span {
+    display: block;
+    margin-bottom: 10px;
+    color: #6fb7ff;
+    font-size: 0.75rem;
+    font-weight: 800;
+  }
+
+
+  .flow-block strong,
+  .flow-block small {
+    display: block;
+  }
+
+
+  .flow-block small {
+    margin-top: 4px;
+    color: #8f9ba8;
+  }
+
+
+  .flow-arrow {
+    display: grid;
+    place-items: center;
+    color: #6fb7ff;
+    font-size: 1.5rem;
+  }
+
+
+  /* PARAMETERS */
+
+  .parameter-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 18px;
+    margin-top: 42px;
+  }
+
+
+  .parameter-card {
+    padding: 26px;
+    border: 1px solid #28313c;
+    border-radius: 14px;
+    background: #151b23;
+  }
+
+
+  .parameter-symbol {
+    display: block;
+    color: #6fb7ff;
+    font-size: 1rem;
+    font-weight: 800;
+  }
+
+
+  .parameter-card > strong {
+    display: block;
+    margin: 8px 0 18px;
+    font-size: 2rem;
+    line-height: 1;
+  }
+
+
+  .parameter-card p {
+    margin-bottom: 0;
+    color: #b4bdc7;
+  }
+
+
+  /* FIGURES */
+
+  .figure-block {
+    margin-top: 54px;
+  }
+
+
+  .figure-caption,
+  .scope-caption {
+    max-width: 760px;
+    margin: 12px 0 0;
+    color: #788492;
+    font-size: 0.9rem;
+  }
+
+
+  /* VALIDATION */
+
+  .validation-results,
+  .sensor-results,
+  .controller-values {
+    display: grid;
+    gap: 16px;
+    margin-top: 38px;
+  }
+
+
+  .validation-results {
+    grid-template-columns: repeat(3, 1fr);
+    max-width: 100%;
+  }
+
+
+.sensor-results {
+  grid-template-columns: repeat(2, 1fr);
+  max-width: 700px;
+}
+
+
+  .controller-values {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+
+  .validation-results article,
+  .sensor-results article,
+  .controller-values article {
+    padding: 22px;
+    border: 1px solid #28313c;
+    border-radius: 12px;
+    background: #151b23;
+  }
+
+
+  .validation-results span,
+  .sensor-results span,
+  .controller-values span {
+    display: block;
+    margin-bottom: 7px;
+    color: #788492;
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+
+  .validation-results strong,
+  .sensor-results strong,
+  .controller-values strong {
+    display: block;
+    font-size: 1.6rem;
+  }
+
+
+  .validation-results p,
+  .controller-values p {
+    margin: 5px 0 0;
+    color: #8f9ba8;
+  }
+
+
+  /* TWO IMAGE ROW */
+
+  .two-image-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px;
+    margin-top: 46px;
+  }
+
+
+  /* FINAL RESULT */
+
+  .result-section {
+    border-top-color: #30465b;
+  }
+
+
+  .final-result {
+    margin-top: 34px;
+    padding: 26px;
+    border-left: 4px solid #6fb7ff;
+    background: #151b23;
+  }
+
+
+  .final-result span {
+    display: block;
+    margin-bottom: 8px;
+    color: #6fb7ff;
+    font-size: 0.75rem;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+
+  .final-result strong {
+    display: block;
+    max-width: 780px;
+    font-size: 1.25rem;
+  }
+
+
+  /* SKILLS */
+
+  .skills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 30px;
+  }
+
+
+  .skills span {
+    padding: 9px 13px;
+    border: 1px solid #34404d;
+    border-radius: 999px;
+    color: #b4bdc7;
+    font-size: 0.9rem;
+  }
+
+
+  /* BOTTOM NAV */
+
+  .bottom-nav {
+    margin-top: 120px;
+    padding-top: 36px;
+    border-top: 1px solid #28313c;
+  }
+
+
+  /* TABLET */
+
+  @media (max-width: 850px) {
+
+    .project-meta {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .parameter-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .controller-values {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .sensor-results {
+      grid-template-columns: 1fr;
+    }
+
+    .two-image-grid {
+      grid-template-columns: 1fr;
+    }
+
+  }
+
+
+  /* MOBILE */
+
+  @media (max-width: 550px) {
+
+    .project-page {
+      width: min(100% - 28px, 1100px);
+    }
+
+    .back-link {
+      margin-bottom: 48px;
+    }
+
+    .project-meta {
+      grid-template-columns: 1fr;
+      margin-bottom: 80px;
+    }
+
+    .content-section {
+      margin-top: 86px;
+    }
+
+    .validation-results,
+    .controller-values {
+      grid-template-columns: 1fr;
+    }
+
+    .hero-image,
+    .large-physical-image {
+      aspect-ratio: 4 / 3;
+    }
+
+    .characterization-graph,
+    .validation-image,
+    .scope-image {
+      width: 100%;
+    }
+
+  }
+
+@media (min-width: 551px) {
+  .validation-results {
+    width: 100%;
+    max-width: none;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+</style>
