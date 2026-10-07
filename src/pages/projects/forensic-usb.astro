@@ -1,0 +1,1219 @@
+---
+const investigationSteps = [
+  {
+    number: "01",
+    title: "Fire Scene Review",
+    text: "Compared the location and severity of thermal damage on two USB-to-Lightning cables recovered near the suspected area of origin."
+  },
+  {
+    number: "02",
+    title: "Microscope Examination",
+    text: "Reviewed laboratory microscope imagery to evaluate terminal damage and the condition of internal conductors."
+  },
+  {
+    number: "03",
+    title: "X-Ray Analysis",
+    text: "Examined the internal connector construction without destroying the evidence, revealing displaced pins and disconnected conductors."
+  },
+  {
+    number: "04",
+    title: "Exemplar Disassembly",
+    text: "Disassembled a comparable USB-to-Lightning cable to understand normal pin retention, conductor termination, and connector construction."
+  },
+  {
+    number: "05",
+    title: "Failure Analysis",
+    text: "Combined physical evidence, electrical behavior, and expected USB construction to evaluate possible arcing and short-circuit mechanisms."
+  }
+];
+
+const evidenceCards = [
+  {
+    title: "Pink Cable",
+    value: "Primary Focus",
+    text: "The most severe visible damage was concentrated near the USB Type-A connector."
+  },
+  {
+    title: "X-Ray Finding",
+    value: "Disconnected Ground",
+    text: "The ground conductor was separated from its connector pin and the terminal pins were displaced."
+  },
+  {
+    title: "Black Cable",
+    value: "Secondary Evidence",
+    text: "Damaged Data+ and Data− conductors were observed, but the evidence supported a less likely ignition mechanism."
+  }
+];
+
+const skills = [
+  "Forensic Electrical Engineering",
+  "Failure Analysis",
+  "X-Ray Interpretation",
+  "Microscopy",
+  "Electrical Fire Mechanisms",
+  "USB Hardware",
+  "Evidence Analysis",
+  "Technical Reporting"
+];
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0"
+    />
+    <meta
+      name="description"
+      content="Forensic USB cable failure analysis investigating USB-to-Lightning cables as a potential ignition source in a residential fire."
+    />
+    <title>Forensic USB Cable Failure Analysis | Matt McFarland</title>
+
+    <style>
+      :global(*) {
+        box-sizing: border-box;
+      }
+
+      :global(html) {
+        scroll-behavior: smooth;
+      }
+
+      :global(body) {
+        margin: 0;
+        background: #0d1117;
+        color: #e6edf3;
+        font-family:
+          Inter,
+          -apple-system,
+          BlinkMacSystemFont,
+          "Segoe UI",
+          sans-serif;
+        line-height: 1.6;
+      }
+
+      :global(a) {
+        color: inherit;
+        text-decoration: none;
+      }
+
+      .page {
+        min-height: 100vh;
+      }
+
+      .container {
+        width: min(1120px, calc(100% - 48px));
+        margin: 0 auto;
+      }
+
+      .narrow {
+        width: min(850px, 100%);
+      }
+
+      /* HEADER */
+
+      header {
+        border-bottom: 1px solid #252c35;
+      }
+
+      .header-inner {
+        min-height: 76px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 24px;
+      }
+
+      .logo {
+        font-size: 1rem;
+        font-weight: 700;
+        letter-spacing: 0.02em;
+      }
+
+      nav {
+        display: flex;
+        gap: 28px;
+        color: #9ba7b4;
+        font-size: 0.95rem;
+      }
+
+      nav a:hover {
+        color: #e6edf3;
+      }
+
+      /* HERO */
+
+      .hero {
+        padding: 92px 0 48px;
+      }
+
+      .back-link {
+        display: inline-block;
+        margin-bottom: 32px;
+        color: #6fb7ff;
+        font-size: 0.92rem;
+        font-weight: 600;
+      }
+
+      .eyebrow {
+        margin: 0 0 14px;
+        color: #6fb7ff;
+        font-size: 0.8rem;
+        font-weight: 700;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+      }
+
+      h1 {
+        max-width: 900px;
+        margin: 0;
+        color: #f0f6fc;
+        font-size: clamp(2.8rem, 7vw, 5.7rem);
+        line-height: 0.98;
+        letter-spacing: -0.055em;
+      }
+
+      .hero-description {
+        max-width: 800px;
+        margin: 30px 0 0;
+        color: #aab4bf;
+        font-size: 1.15rem;
+        line-height: 1.75;
+      }
+
+      .project-meta {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 1px;
+        margin-top: 48px;
+        overflow: hidden;
+        border: 1px solid #29313b;
+        border-radius: 12px;
+        background: #29313b;
+      }
+
+      .meta-item {
+        min-height: 115px;
+        padding: 24px;
+        background: #111720;
+      }
+
+      .meta-label {
+        display: block;
+        margin-bottom: 8px;
+        color: #75808c;
+        font-size: 0.72rem;
+        font-weight: 700;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+      }
+
+      .meta-value {
+        color: #e6edf3;
+        font-size: 0.98rem;
+        font-weight: 600;
+      }
+
+      .hero-image {
+        width: min(100%, 880px);
+        margin: 52px auto 20px;
+        overflow: hidden;
+        border: 1px solid #29313b;
+        border-radius: 14px;
+      }
+
+      .hero-image img {
+        width: 100%;
+        height: auto;
+        display: block;
+      }
+
+      /* GENERAL SECTION STYLING */
+
+      section {
+        padding: 96px 0;
+        border-top: 1px solid #202731;
+      }
+
+      .section-label {
+        margin: 0 0 14px;
+        color: #6fb7ff;
+        font-size: 0.76rem;
+        font-weight: 700;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+      }
+
+      h2 {
+        max-width: 850px;
+        margin: 0;
+        color: #f0f6fc;
+        font-size: clamp(2rem, 4vw, 3.25rem);
+        line-height: 1.12;
+        letter-spacing: -0.035em;
+      }
+
+      h3 {
+        margin: 0 0 12px;
+        color: #f0f6fc;
+        font-size: 1.15rem;
+      }
+
+      .section-intro {
+        max-width: 820px;
+        margin: 24px 0 0;
+        color: #9faab6;
+        font-size: 1.05rem;
+        line-height: 1.8;
+      }
+
+      .text-block {
+        max-width: 820px;
+        margin-top: 34px;
+        color: #aab4bf;
+        font-size: 1rem;
+        line-height: 1.8;
+      }
+
+      .text-block p {
+        margin: 0 0 18px;
+      }
+
+      /* OBJECTIVE */
+
+      .objective-grid {
+        display: grid;
+        grid-template-columns: 1.15fr 0.85fr;
+        gap: 64px;
+        align-items: start;
+        margin-top: 44px;
+      }
+
+      .objective-card {
+        padding: 30px;
+        border: 1px solid #2a333e;
+        border-radius: 12px;
+        background: #111720;
+      }
+
+      .objective-card .small-label {
+        margin-bottom: 10px;
+        color: #75808c;
+        font-size: 0.72rem;
+        font-weight: 700;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+      }
+
+      .objective-card strong {
+        display: block;
+        color: #f0f6fc;
+        font-size: 1.3rem;
+        line-height: 1.35;
+      }
+
+      .objective-card p {
+        margin: 14px 0 0;
+        color: #939eaa;
+      }
+
+      /* INVESTIGATION */
+
+      .steps {
+        margin-top: 50px;
+        border-top: 1px solid #2a333e;
+      }
+
+      .step {
+        display: grid;
+        grid-template-columns: 80px 220px 1fr;
+        gap: 28px;
+        align-items: start;
+        padding: 28px 0;
+        border-bottom: 1px solid #2a333e;
+      }
+
+      .step-number {
+        color: #6fb7ff;
+        font-family: monospace;
+        font-size: 0.9rem;
+      }
+
+      .step-title {
+        color: #f0f6fc;
+        font-weight: 700;
+      }
+
+      .step-text {
+        max-width: 650px;
+        color: #909ba7;
+      }
+
+      /* EVIDENCE CARDS */
+
+      .evidence-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 18px;
+        margin-top: 42px;
+      }
+
+      .evidence-card {
+        padding: 28px;
+        border: 1px solid #2a333e;
+        border-radius: 12px;
+        background: #111720;
+      }
+
+      .evidence-title {
+        color: #7f8a96;
+        font-size: 0.76rem;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      .evidence-value {
+        margin-top: 8px;
+        color: #f0f6fc;
+        font-size: 1.35rem;
+        font-weight: 700;
+      }
+
+      .evidence-text {
+        margin: 12px 0 0;
+        color: #909ba7;
+        font-size: 0.93rem;
+      }
+
+      /* IMAGE BLOCKS */
+
+      .image-block {
+        width: 100%;
+        margin-top: 44px;
+      }
+
+      .image-block img {
+        width: 100%;
+        height: auto;
+        display: block;
+        border: 1px solid #2a333e;
+        border-radius: 12px;
+      }
+
+      .image-caption {
+        margin: 12px 0 0;
+        color: #707c88;
+        font-size: 0.82rem;
+      }
+
+      .image-pair {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+        margin-top: 44px;
+      }
+
+      .image-pair figure {
+        margin: 0;
+      }
+
+      .image-pair img {
+        width: 100%;
+        height: 380px;
+        object-fit: cover;
+        display: block;
+        border: 1px solid #2a333e;
+        border-radius: 12px;
+      }
+
+      .xray-image {
+        width: min(100%, 700px);
+        margin: 48px auto 0;
+      }
+
+      .xray-image img {
+        width: 100%;
+        height: auto;
+        display: block;
+        border: 1px solid #2a333e;
+        border-radius: 12px;
+        background: #f5f5f5;
+      }
+
+      /* FINDING */
+
+      .finding-callout {
+        margin-top: 42px;
+        padding: 34px;
+        border: 1px solid #31506d;
+        border-radius: 12px;
+        background: #101a24;
+      }
+
+      .finding-callout .callout-label {
+        color: #6fb7ff;
+        font-size: 0.75rem;
+        font-weight: 700;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+      }
+
+      .finding-callout p {
+        max-width: 850px;
+        margin: 12px 0 0;
+        color: #c1c9d2;
+        font-size: 1.08rem;
+        line-height: 1.7;
+      }
+
+      /* COMPARISON */
+
+      .comparison-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 22px;
+        margin-top: 44px;
+      }
+
+      .comparison-card {
+        padding: 30px;
+        border: 1px solid #2a333e;
+        border-radius: 12px;
+        background: #111720;
+      }
+
+      .comparison-card h3 {
+        font-size: 1.3rem;
+      }
+
+      .comparison-card p {
+        margin: 12px 0 0;
+        color: #949faa;
+      }
+
+      .comparison-card ul {
+        margin: 20px 0 0;
+        padding-left: 20px;
+        color: #aab4bf;
+      }
+
+      .comparison-card li {
+        margin-bottom: 9px;
+      }
+
+      /* FAILURE MECHANISM */
+
+      .failure-flow {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 12px;
+        margin-top: 50px;
+      }
+
+      .flow-item {
+        position: relative;
+        min-height: 170px;
+        padding: 26px;
+        border: 1px solid #2a333e;
+        border-radius: 12px;
+        background: #111720;
+      }
+
+      .flow-number {
+        color: #6fb7ff;
+        font-family: monospace;
+        font-size: 0.78rem;
+      }
+
+      .flow-item strong {
+        display: block;
+        margin-top: 14px;
+        color: #f0f6fc;
+        font-size: 1.08rem;
+      }
+
+      .flow-item p {
+        margin: 10px 0 0;
+        color: #87929e;
+        font-size: 0.9rem;
+      }
+
+      /* CONCLUSION */
+
+      .conclusion {
+        padding: 48px;
+        margin-top: 46px;
+        border: 1px solid #31506d;
+        border-radius: 14px;
+        background: #101a24;
+      }
+
+      .conclusion-label {
+        color: #6fb7ff;
+        font-size: 0.75rem;
+        font-weight: 700;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+      }
+
+      .conclusion p {
+        max-width: 900px;
+        margin: 16px 0 0;
+        color: #d0d7de;
+        font-size: clamp(1.15rem, 2vw, 1.45rem);
+        line-height: 1.65;
+      }
+
+      .qualification {
+        margin-top: 24px !important;
+        color: #8894a0 !important;
+        font-size: 0.93rem !important;
+      }
+
+      /* SKILLS */
+
+      .skills {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 34px;
+      }
+
+      .skill {
+        padding: 9px 14px;
+        border: 1px solid #2d3742;
+        border-radius: 999px;
+        color: #aab4bf;
+        background: #111720;
+        font-size: 0.86rem;
+      }
+
+      /* FOOTER */
+
+      footer {
+        padding: 60px 0;
+        border-top: 1px solid #202731;
+      }
+
+      .footer-inner {
+        display: flex;
+        justify-content: space-between;
+        gap: 24px;
+        color: #75808c;
+        font-size: 0.9rem;
+      }
+
+      .footer-inner a {
+        color: #6fb7ff;
+      }
+
+      /* RESPONSIVE */
+
+      @media (max-width: 900px) {
+        .project-meta {
+          grid-template-columns: repeat(2, 1fr);
+        }
+
+        .objective-grid {
+          grid-template-columns: 1fr;
+          gap: 24px;
+        }
+
+        .step {
+          grid-template-columns: 55px 1fr;
+        }
+
+        .step-text {
+          grid-column: 2;
+        }
+
+        .evidence-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .failure-flow {
+          grid-template-columns: repeat(2, 1fr);
+        }
+      }
+
+      @media (max-width: 650px) {
+        .container {
+          width: min(100% - 32px, 1120px);
+        }
+
+        nav {
+          display: none;
+        }
+
+        .hero {
+          padding-top: 64px;
+        }
+
+        section {
+          padding: 72px 0;
+        }
+
+        .project-meta {
+          grid-template-columns: 1fr;
+        }
+
+        .image-pair {
+          grid-template-columns: 1fr;
+        }
+
+        .image-pair img {
+          height: auto;
+        }
+
+        .comparison-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .failure-flow {
+          grid-template-columns: 1fr;
+        }
+
+        .conclusion {
+          padding: 30px;
+        }
+
+        .footer-inner {
+          flex-direction: column;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="page">
+
+      <header>
+        <div class="container header-inner">
+          <a class="logo" href="/">Matt McFarland</a>
+
+          <nav>
+            <a href="/#about">About</a>
+            <a href="/#projects">Projects</a>
+            <a href="/#contact">Contact</a>
+          </nav>
+        </div>
+      </header>
+
+      <main>
+
+        <!-- HERO -->
+
+        <div class="hero">
+          <div class="container">
+            <a class="back-link" href="/#projects">
+              ← Back to Projects
+            </a>
+
+            <p class="eyebrow">
+              Forensic Electrical Engineering
+            </p>
+
+            <h1>
+              Forensic USB Cable Failure Analysis
+            </h1>
+
+            <p class="hero-description">
+              Investigation of two USB-to-Lightning cables recovered from
+              a residential fire to determine whether an electrical defect
+              could have created a plausible ignition mechanism.
+            </p>
+
+            <div class="project-meta">
+              <div class="meta-item">
+                <span class="meta-label">Focus</span>
+                <span class="meta-value">Failure Analysis</span>
+              </div>
+
+              <div class="meta-item">
+                <span class="meta-label">Methods</span>
+                <span class="meta-value">X-Ray + Microscopy</span>
+              </div>
+
+              <div class="meta-item">
+                <span class="meta-label">Hardware</span>
+                <span class="meta-value">USB-to-Lightning Cable</span>
+              </div>
+
+              <div class="meta-item">
+                <span class="meta-label">Outcome</span>
+                <span class="meta-value">Plausible Failure Mechanism</span>
+              </div>
+            </div>
+
+            <div class="hero-image">
+              <img
+                src="/projects/forensic-usb/hero.jpeg"
+                alt="USB cable evidence examined during forensic electrical investigation"
+              />
+            </div>
+          </div>
+        </div>
+
+
+        <!-- INVESTIGATION OBJECTIVE -->
+
+        <section>
+          <div class="container">
+            <p class="section-label">01 — Investigation Objective</p>
+
+            <h2>
+              Determine whether the recovered electrical evidence could
+              explain the fire.
+            </h2>
+
+            <div class="objective-grid">
+              <div class="text-block">
+                <p>
+                  Two damaged USB-to-Lightning cables were recovered near a
+                  burned electrical outlet following a residential fire. The
+                  fire department identified the room of origin but did not
+                  establish a specific cause.
+                </p>
+
+                <p>
+                  The investigation focused on determining whether either
+                  cable contained an electrical or mechanical defect capable
+                  of producing a short circuit, electrical arc, or localized
+                  heating event.
+                </p>
+
+                <p>
+                  Rather than relying on a single observation, the analysis
+                  combined fire-scene photographs, laboratory imaging,
+                  connector construction, electrical behavior, and comparison
+                  with a similar undamaged cable.
+                </p>
+              </div>
+
+              <div class="objective-card">
+                <div class="small-label">Engineering Question</div>
+
+                <strong>
+                  Could a defect inside one of the recovered USB connectors
+                  have created conditions capable of ignition?
+                </strong>
+
+                <p>
+                  The investigation required distinguishing damage caused by
+                  the fire from damage that may have existed before or during
+                  ignition.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+
+        <!-- INVESTIGATION PROCESS -->
+
+        <section>
+          <div class="container">
+            <p class="section-label">02 — Investigation Process</p>
+
+            <h2>
+              Building a conclusion from multiple independent forms of evidence.
+            </h2>
+
+            <p class="section-intro">
+              The analysis progressed from macroscopic fire-scene evidence
+              to increasingly detailed examination of the internal electrical
+              construction.
+            </p>
+
+            <div class="steps">
+              {investigationSteps.map((step) => (
+                <div class="step">
+                  <div class="step-number">{step.number}</div>
+                  <div class="step-title">{step.title}</div>
+                  <div class="step-text">{step.text}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+
+        <!-- FIRE SCENE -->
+
+        <section>
+          <div class="container">
+            <p class="section-label">03 — Fire-Scene Evidence</p>
+
+            <h2>
+              Damage patterns helped determine where to focus the investigation.
+            </h2>
+
+            <p class="section-intro">
+              The two recovered cables exhibited substantially different
+              damage patterns. The pink cable showed severe damage concentrated
+              around its USB Type-A terminal, while the black cable showed
+              greater damage farther along the cable.
+            </p>
+
+            <div class="evidence-grid">
+              {evidenceCards.map((card) => (
+                <div class="evidence-card">
+                  <div class="evidence-title">{card.title}</div>
+                  <div class="evidence-value">{card.value}</div>
+                  <p class="evidence-text">{card.text}</p>
+                </div>
+              ))}
+            </div>
+
+            <div class="image-pair">
+              <figure>
+                <img
+                  src="/projects/forensic-usb/fire-scene-outlet.jpeg"
+                  alt="Fire damaged outlet examined during the investigation"
+                />
+                <figcaption class="image-caption">
+                  Fire-damaged outlet near the recovered USB cables.
+                </figcaption>
+              </figure>
+
+              <figure>
+                <img
+                  src="/projects/forensic-usb/damaged-pink-cable.jpeg"
+                  alt="Damaged pink USB-to-Lightning cable"
+                />
+                <figcaption class="image-caption">
+                  Pink cable showing severe damage concentrated near the
+                  USB Type-A connector.
+                </figcaption>
+              </figure>
+            </div>
+          </div>
+        </section>
+
+
+        <!-- MICROSCOPY -->
+
+        <section>
+          <div class="container">
+            <p class="section-label">04 — Microscopy</p>
+
+            <h2>
+              Separating fire exposure from potential electrical failure.
+            </h2>
+
+            <p class="section-intro">
+              Microscope imagery of the black cable showed a damaged
+              Lightning terminal but relatively intact internal conductors
+              in the examined section. The observations were more consistent
+              with exposure to the surrounding fire than with that terminal
+              being the primary ignition location.
+            </p>
+
+            <div class="image-block">
+              <img
+                src="/projects/forensic-usb/black-cable-microscope.jpeg"
+                alt="Microscope examination of internal conductors in the black USB cable"
+              />
+              <p class="image-caption">
+                Microscope examination of internal conductors from the black cable.
+              </p>
+            </div>
+          </div>
+        </section>
+
+
+        <!-- X-RAY -->
+
+        <section>
+          <div class="container">
+            <p class="section-label">05 — X-Ray Investigation</p>
+
+            <h2>
+              The most significant evidence was hidden inside the connector.
+            </h2>
+
+            <p class="section-intro">
+              X-ray imaging allowed the internal connector geometry to be
+              examined without further disturbing the fire-damaged evidence.
+              The pink cable showed abnormal internal construction that was
+              not externally visible.
+            </p>
+
+            <div class="xray-image">
+              <img
+                src="/projects/forensic-usb/pink-cable-xray.jpeg"
+                alt="X-ray of pink USB cable showing displaced pins and disconnected ground conductor"
+              />
+              <p class="image-caption">
+                X-ray of the pink USB Type-A connector.
+              </p>
+            </div>
+
+            <div class="finding-callout">
+              <div class="callout-label">Key Finding</div>
+
+              <p>
+                The USB Type-A connector contained displaced terminal pins
+                and a ground conductor that was disconnected from its pin.
+                This created a potential abnormal electrical condition at
+                the same end of the cable that exhibited the greatest
+                fire damage.
+              </p>
+            </div>
+          </div>
+        </section>
+
+
+        <!-- BLACK CABLE COMPARISON -->
+
+        <section>
+          <div class="container">
+            <p class="section-label">06 — Competing Evidence</p>
+
+            <h2>
+              The second cable also contained damage — but supported a weaker failure hypothesis.
+            </h2>
+
+            <div class="comparison-grid">
+              <div class="comparison-card">
+                <h3>Pink Cable</h3>
+
+                <p>
+                  Evidence supported greater concern at the USB Type-A
+                  connector.
+                </p>
+
+                <ul>
+                  <li>Displaced USB connector pins</li>
+                  <li>Disconnected ground conductor</li>
+                  <li>Heavy damage concentrated near the USB terminal</li>
+                  <li>Potential for an abnormal power or ground path</li>
+                </ul>
+              </div>
+
+              <div class="comparison-card">
+                <h3>Black Cable</h3>
+
+                <p>
+                  X-ray examination revealed damaged Data+ and Data−
+                  conductors, but the electrical and physical evidence
+                  supported a less likely ignition mechanism.
+                </p>
+
+                <ul>
+                  <li>Damage present in Data+ and Data− conductors</li>
+                  <li>Power and ground connections appeared comparatively intact</li>
+                  <li>Data conductors operate at substantially lower electrical power</li>
+                  <li>Conductors did not exhibit the same displacement</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="xray-image">
+              <img
+                src="/projects/forensic-usb/black-cable-xray.jpeg"
+                alt="X-ray examination of damaged conductors in black USB cable"
+              />
+              <p class="image-caption">
+                X-ray evidence from the black cable used as part of the
+                comparative failure analysis.
+              </p>
+            </div>
+          </div>
+        </section>
+
+
+        <!-- DISASSEMBLY -->
+
+        <section>
+          <div class="container">
+            <p class="section-label">07 — Exemplar Disassembly</p>
+
+            <h2>
+              Understanding how the connector should have been constructed.
+            </h2>
+
+            <p class="section-intro">
+              A comparable USB-to-Lightning cable was physically disassembled
+              to determine how its Type-A connector retained the terminal pins
+              and attached the internal conductors.
+            </p>
+
+            <div class="text-block">
+              <p>
+                Inside the exemplar connector, the conductors were mechanically
+                attached to their terminal pins using crimped connections. The
+                connections were surrounded by molded material that helped
+                prevent movement, while the connector body contained features
+                that maintained pin alignment.
+              </p>
+
+              <p>
+                This construction made ordinary pulling or bending a less
+                convincing explanation for the complete conductor separation
+                observed in the fire-damaged pink cable and supported a
+                possible improper connection or manufacturing defect.
+              </p>
+            </div>
+
+            <div class="image-pair">
+              <figure>
+                <img
+                  src="/projects/forensic-usb/exemplar-usb-terminal.jpeg"
+                  alt="Disassembled USB Type-A terminal showing internal connector construction"
+                />
+                <figcaption class="image-caption">
+                  Internal structure of the exemplar USB Type-A connector.
+                </figcaption>
+              </figure>
+
+              <figure>
+                <img
+                  src="/projects/forensic-usb/exemplar-crimp-connection.jpeg"
+                  alt="USB terminal pin and crimped wire connection"
+                />
+                <figcaption class="image-caption">
+                  Terminal pin and conductor crimp connection from the
+                  exemplar cable.
+                </figcaption>
+              </figure>
+            </div>
+          </div>
+        </section>
+
+
+        <!-- FAILURE MECHANISM -->
+
+        <section>
+          <div class="container">
+            <p class="section-label">08 — Failure Mechanism</p>
+
+            <h2>
+              Connecting the physical defect to a possible electrical ignition mechanism.
+            </h2>
+
+            <p class="section-intro">
+              The evidence did not establish a single observed ignition event.
+              Instead, the investigation evaluated whether the physical
+              condition of the connector could produce known electrical
+              failure modes capable of generating heat.
+            </p>
+
+            <div class="failure-flow">
+              <div class="flow-item">
+                <div class="flow-number">01</div>
+                <strong>Defective Connection</strong>
+                <p>
+                  Ground conductor disconnected and connector pins displaced.
+                </p>
+              </div>
+
+              <div class="flow-item">
+                <div class="flow-number">02</div>
+                <strong>Abnormal Electrical Path</strong>
+                <p>
+                  Loss of a stable return path or unintended contact between
+                  conductors.
+                </p>
+              </div>
+
+              <div class="flow-item">
+                <div class="flow-number">03</div>
+                <strong>Arcing or Short Circuit</strong>
+                <p>
+                  Electrical energy could be dissipated through an unintended
+                  current path.
+                </p>
+              </div>
+
+              <div class="flow-item">
+                <div class="flow-number">04</div>
+                <strong>Localized Heating</strong>
+                <p>
+                  Heat or sparks could potentially ignite nearby cable
+                  materials or surrounding combustibles.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+
+        <!-- CONCLUSION -->
+
+        <section>
+          <div class="container">
+            <p class="section-label">09 — Engineering Conclusion</p>
+
+            <h2>
+              A technically supported explanation — with the uncertainty preserved.
+            </h2>
+
+            <div class="conclusion">
+              <div class="conclusion-label">Conclusion</div>
+
+              <p>
+                The combined fire-scene evidence, X-ray imaging, and exemplar
+                disassembly supported the defective pink USB-to-Lightning
+                cable as a plausible ignition source. The displaced connector
+                pins and disconnected ground conductor created conditions
+                that could potentially produce electrical arcing or a
+                short circuit and the localized heating associated with
+                those failure modes.
+              </p>
+
+              <p class="qualification">
+                Forensic engineering requires distinguishing what the
+                evidence supports from what it cannot prove. The investigation
+                identified a technically plausible failure mechanism, but did
+                not claim direct observation of the initiating electrical event.
+              </p>
+            </div>
+          </div>
+        </section>
+
+
+        <!-- LEARNING -->
+
+        <section>
+          <div class="container">
+            <p class="section-label">10 — What I Learned</p>
+
+            <h2>
+              Engineering from evidence instead of a known starting condition.
+            </h2>
+
+            <p class="section-intro">
+              This project required a different engineering mindset from
+              traditional design work. Instead of creating a system and
+              measuring its behavior, I had to reconstruct what may have
+              happened from incomplete and fire-damaged physical evidence.
+              The process strengthened my ability to compare competing
+              hypotheses, connect physical observations to electrical failure
+              mechanisms, and communicate conclusions without overstating
+              what the available evidence could establish.
+            </p>
+
+            <div class="skills">
+              {skills.map((skill) => (
+                <span class="skill">{skill}</span>
+              ))}
+            </div>
+          </div>
+        </section>
+
+      </main>
+
+
+      <footer>
+        <div class="container footer-inner">
+          <span>Matt McFarland — Electrical Engineering</span>
+          <a href="/#projects">Back to Projects ↑</a>
+        </div>
+      </footer>
+
+    </div>
+  </body>
+</html>
